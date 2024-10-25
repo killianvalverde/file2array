@@ -1,0 +1,1 @@
+add_subdirectory(file2array_gtest)
