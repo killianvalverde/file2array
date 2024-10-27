@@ -33,6 +33,8 @@ TEST(file2array_program, execute)
 {
     int ret = -1;
     file2array::program_args prog_args;
+    prog_args.input_file_pth = "HoYoverse - 018.png";
+    prog_args.output_file_pth = "array.txt";
     
     file2array::program prog(std::move(prog_args));
     
