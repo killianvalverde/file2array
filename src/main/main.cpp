@@ -24,6 +24,7 @@
  * @date        2024/10/25
  */
 
+#define SPEED_MULTIPLATFORM_MAIN_WITH_UNICODE_SUPPORT
 #include <speed/speed.hpp>
 
 #include "../file2array/program.hpp"
@@ -40,8 +41,25 @@ int main(int argc, char* argv[])
         spd::ap::arg_parser ap("file2array");
         
         ap.add_help_menu()
-                .description("Generates a C++ header file that includes an array representing the byte-by-byte content of a specified regular file.");
-                
+                .description("Generates a C++ header file that includes an array representing the "
+                             "byte-by-byte content of a specified regular file.");
+
+        ap.add_keyless_arg("INPUT-FILE")
+                .description("Input file.")
+                .store_into(&prog_args.input_file_pth);
+
+        ap.add_keyless_arg("OUTPUT-FILE")
+                .description("Output file.")
+                .store_into(&prog_args.output_file_pth);
+        
+        ap.add_key_value_arg("--array-name", "-n")
+                .description("The name of the array in the output file.")
+                .store_into(&prog_args.array_nme);
+        
+        ap.add_key_value_arg("--right-margin-length", "-r")
+                .description("The maximum number of columns the output file can contain.")
+                .store_into(&prog_args.right_margin_len);
+        
         ap.add_help_arg("--help", "-h")
                 .description("Display this help and exit.");
                 
