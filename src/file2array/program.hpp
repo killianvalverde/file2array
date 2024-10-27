@@ -55,6 +55,43 @@ public:
     int execute();
 
 private:
+    template <typename TpChar_>
+    std::basic_string<TpChar_> remove_extension(const std::basic_string<TpChar_>& filename)
+    {
+        using string_type = std::basic_string<TpChar_>;
+        
+        typename string_type::size_type dot_pos = filename.find_last_of('.');
+        
+        if (dot_pos != string_type::npos && dot_pos > 0)
+        {
+            return filename.substr(0, dot_pos);
+        }
+        
+        return filename;
+    }
+    
+    template <typename TpChar_>
+    std::string sanitize_identifier(const std::basic_string<TpChar_>& inpt)
+    {
+        std::string res;
+        bool is_first_char = true;
+        
+        for (TpChar_ ch : inpt)
+        {
+            if (std::isalnum(ch) || ch == '_')
+            {
+                if (is_first_char && std::isdigit(ch))
+                {
+                    continue;
+                }
+    
+                res += (std::string::value_type)ch;
+                is_first_char = false;
+            }
+        }
+    
+        return res;
+    }
 
 private:
     /** The program arguments. */

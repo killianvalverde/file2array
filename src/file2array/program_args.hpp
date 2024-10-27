@@ -27,6 +27,8 @@
 #ifndef FILE2ARRAY_PROGRAM_ARGS_HPP
 #define FILE2ARRAY_PROGRAM_ARGS_HPP
 
+#include <speed/speed.hpp>
+
 
 namespace file2array {
 
@@ -36,6 +38,10 @@ namespace file2array {
  */
 struct program_args
 {
+    spd::fsys::r_regular_file_path input_file_pth;
+    spd::fsys::output_regular_file_path output_file_pth;
+    std::string array_nme;
+    std::uint8_t right_margin_len = 100;
 };
 
 

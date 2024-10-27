@@ -23,6 +23,8 @@
  * @author      Killian Valverde
  * @date        2024/10/25
  */
+ 
+#include <fstream>
 
 #include "program.hpp"
 
@@ -38,7 +40,61 @@ program::program(program_args&& prog_args)
 
 int program::execute()
 {
-    std::cout << "hello, world" << std::endl;
+    std::ifstream ifs(prog_args_.input_file_pth, std::ios::binary);
+    std::ofstream ofs(prog_args_.output_file_pth, std::ios::binary);
+    std::size_t input_file_size = spd::sys::fsys::get_file_size(prog_args_.input_file_pth.c_str());
+    std::ifstream::char_type ch;
+    std::uint8_t n_printed_chars = 4;
+    
+    if (!ifs || !ofs || input_file_size == -1)
+    {
+        std::cout << spd::ios::set_light_red_text
+                  << "Fatal file error."
+                  << spd::ios::set_default_text
+                  << std::endl;
+        
+        return 1;
+    }
+    
+    prog_args_.array_nme = sanitize_identifier(prog_args_.array_nme);
+    if (prog_args_.array_nme.empty())
+    {
+        prog_args_.array_nme = sanitize_identifier(remove_extension(
+                prog_args_.input_file_pth.filename().native()));
+    }
+    if (prog_args_.array_nme.empty())
+    {
+        prog_args_.array_nme = "dat";
+    }
+    
+    if (prog_args_.right_margin_len < 80)
+    {
+        prog_args_.right_margin_len = 100;
+    }
+    
+    ofs << "std::array<std::uint8_t, " << input_file_size << "> "
+        << prog_args_.array_nme
+        << "{\n   ";
+    
+    ofs << std::hex << std::setfill('0');
+    
+    while (ifs.get(ch))
+    {
+        if (n_printed_chars >= 95)
+        {
+            ofs << "\n   ";
+            n_printed_chars = 4;
+        }
+        
+        ofs << " 0x" << std::setw(2) << (static_cast<std::uint16_t>(ch) & 0x00FF) << ",";
+        n_printed_chars += 6;
+    }
+    
+    ofs.seekp(-1, std::ios_base::cur);
+    ofs << "\n};\n";
+    
+    ifs.close();
+    ofs.close();
     
     return 0;
 }
